@@ -1,5 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+
+dennishoyer-**/*/data
+dennishoyer-**/*/cache
+
 dennishoyer-crm
 hass-config/www
 dennishoyer-data/mariadb/databases/**
