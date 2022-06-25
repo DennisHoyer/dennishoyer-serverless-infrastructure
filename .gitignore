@@ -2,9 +2,9 @@
 
 dennishoyer-crm
 hass-config/www
-dennishoyer-data/mariadb/databases
+dennishoyer-data/mariadb/databases/**
 dennishoyer-data/mariadb/log
-dennishoyer-data/postgres/base
+dennishoyer-data/postgres/**
 
 # compiled output
 /dist
