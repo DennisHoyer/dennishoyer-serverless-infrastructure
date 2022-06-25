@@ -8,11 +8,15 @@ dennishoyer-data/postgres/**
 dennishoyer-development/data/backups/**
 
 dennishoyer-home/hass-config/custom_components/**
+dennishoyer-development/sentry
+dennishoyer-development/verdaccio/storage/**
+dennishoyer-home/hass-config/**
+
 # compiled output
 /dist
 /tmp
 /out-tsc
-
+.npm
 .turbo
 build/**
 dist/**
