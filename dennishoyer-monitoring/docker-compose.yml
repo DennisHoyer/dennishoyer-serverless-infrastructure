@@ -1,0 +1,100 @@
+version: "3.8"
+services:
+
+
+  posthog:
+    container_name: posthog
+    image: posthog/posthog
+    ports:
+      - "50:3000"
+    environment:
+      - DATABASE_URL=postgres://posthog:myp@ssw0rd@postgres:5432/posthog
+      - IS_DOCKER=true
+      - REDIS_URL=redis://redis:6379/
+      - SECRET_KEY=${SECRET_KEY:-mys3cr3t}  # openssl rand -hex 32
+      - DISABLE_SECURE_SSL_REDIRECT=true
+      - SITE_URL=${SCHEME:-https}://${DOMAIN:-posthog.localhost}
+      - JS_URL=${SCHEME:-https}://${DOMAIN:-posthog.localhost}
+      - ASYNC_EVENT_PROPERTY_USAGE=1
+    # deploy:
+    #   labels:
+    #     - traefik.enable=true
+    #     - traefik.http.routers.posthog-${NUMBER:-1}.rule=Host(`${DOMAIN:-posthog.localhost}`)
+    #     - traefik.http.routers.posthog-${NUMBER:-1}.entrypoints=${SCHEME:-https}
+    #     - traefik.http.routers.posthog-${NUMBER:-1}.service=posthog-${NUMBER:-1}
+    #     - traefik.http.routers.posthog-${NUMBER:-1}.tls.certresolver=letsencrypt
+    #     - traefik.http.services.posthog-${NUMBER:-1}.loadbalancer.server.port=8000
+    networks:
+      - traefik
+      - internal
+
+
+  netdata:
+      container_name: netdata
+      image: netdata/netdata
+      hostname: ahrberg14.de # set to fqdn of host
+      ports:
+        - 8120:19999
+      restart: unless-stopped
+      cap_add:
+        - SYS_PTRACE
+      security_opt:
+        - apparmor:unconfined
+      volumes:
+        - ./netdata/config:/etc/netdata
+        - ./netdata/lib:/var/lib/netdata
+        - ./netdata/cache:/var/cache/netdata
+        - /etc/passwd:/host/etc/passwd:ro
+        - /etc/group:/host/etc/group:ro
+        - /proc:/host/proc:ro
+        - /sys:/host/sys:ro
+        - /etc/os-release:/host/etc/os-release:ro
+      environment:
+        - NETDATA_CLAIM_TOKEN=wrpgqXFuDTNZ0eNCBuoLlqJFnkHPoZ4hU8FWyga7nydCQKT4f5GtugiQFEtPWTUsUNXYs-VhfAnCOn4I46UO4DMlVLT-z5Up35end5f3jmpv8T2we9sz88zf9-FgoWD0PvcJGjQ
+        - NETDATA_CLAIM_URL=https://app.netdata.cloud
+        - NETDATA_CLAIM_ROOMS=
+
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 51:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - ./prometheus/data:/prometheus
+    networks:
+      - traefik
+      - internal
+
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - 5:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=dennishoyer
+      - GF_SECURITY_ADMIN_PASSWORD=passwort
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+    networks:
+      - traefik
+      - internal
+
+volumes:
+  prometheus:
+  grafana:
+  netdata:
+  
+networks:
+  internal:
+    driver: overlay
+    attachable: true
+  traefik:
+    attachable: true
+    name: traefik-net

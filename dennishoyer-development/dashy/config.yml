@@ -1,0 +1,112 @@
+---
+pageInfo:
+  title: DennisHoyer's Dashboard
+appConfig:
+  faviconApi: allesedv
+  theme: cherry-blossom
+sections:
+- name: Customer Relations
+  displayData:
+    collapsed: false
+    cols: 2
+  items:
+
+  - title: BotPress
+    description: Telegram/WhatsApp Chatbot
+    icon: favicon
+    url: http://localhost:1961/
+
+
+  - title: Chatwoot
+    description: CRM Chatbot
+    icon: favicon
+    url: http://localhost:1961/
+
+    
+
+  - title: Node-RED
+    description: Flow-based automation
+    icon: favicon
+    url: http://localhost:1961/
+
+
+
+- name: App Development
+  items:
+  - title: PostHog
+    description: Smart home control
+    icon: favicon
+    url: http://localhost:1961/
+
+  - title: Sentry
+    description: Flow-based automation
+    icon: favicon
+    url: http://localhost:1961/
+
+  - title: OpenReplay
+    description: Flow-based automation
+    icon: favicon
+    url: http://localhost:1961/
+
+
+  - title: NPM Repository
+    description: Flow-based automation
+    icon: favicon
+    url: http://localhost:1950/
+
+    
+- name: Network
+  items:
+  - title: Traefik
+    description: Request routing
+    icon: favicon
+    url: http://localhost:8080/
+
+  - title: CloudFlare
+    description: CloudFlare
+    url: https://healthchecks.io/checks/
+    icon: favicon
+
+  - title: ZeroTier
+    description: Secure networks between devices
+    url: https://my.zerotier.com/
+    icon: favicon
+
+  - title: Pi-Hole
+    description: DNS settings for ad & tracker blocking
+    icon: favicon
+    url: http://localhost:81/
+
+  - title: Grafana
+    description: Data visualised on dashboards
+    icon: favicon
+    url: http://localhost:1961/
+
+- name: System Maintence
+  items:
+  - title: NetData
+    description: Real-time system resource usage
+    icon: favicon
+    url: http://localhost:1970/
+
+  - title: Portainer
+    description: Docker container management
+    icon: favicon
+    url: http://localhost:9443/
+
+  - title: Prometheus
+    description: System Statistics Aggregation with PromQL
+    icon: favicon
+    url: http://localhost:1960/
+
+- name: Home Control
+  items:
+  - title: Home Assistant
+    description: Smart home control
+    icon: favicon
+    url: http://localhost:8123/
+
+  - title: Node-RED
+    description: Flow-based automation
+    icon: favicon
+    url: http://localhost:1880/

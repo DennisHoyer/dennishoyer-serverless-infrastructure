@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"ColorfulMonorepo.workspaces.collection": [
+			{
+				"path": "/Users/dennis/projects/dennishoyer-docker",
+				"packageName": "dennishoyer-docker",
+				"label": "dennishoyer-docker",
+				"foreground": "#ffffff",
+				"background": "#d16f47"
+			}
+		],
+		"ColorfulMonorepo.arrange.init": true
+	},
+}

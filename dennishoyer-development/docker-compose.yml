@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+
+  dashboard:
+    container_name: dashboard
+    # To build from source, replace 'image: lissy93/dashy' with 'build: .'
+    # build: .
+    image: lissy93/dashy
+    # Pass in your config file below, by specifying the path on your host machine
+    volumes:
+      - ./dashy/config.yml:/app/public/conf.yml
+    ports:
+      - 84:80
+    # Set any environmental variables
+    environment:
+      - NODE_ENV=production
+    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
+      - UID=501
+      - GID=20
+    # Specify restart policy
+    restart: unless-stopped
+    # Configure healthchecks
+    healthcheck:
+      test: ['CMD', 'node', '/app/services/healthcheck']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - traefik
+      - internal
+
+
+  npm-repository:
+    container_name: npm-repository
+    image: verdaccio/verdaccio
+    environment:
+      - VERDACCIO_PORT=4873
+    ports:
+      - "1000:4873"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.verdaccio.rule=Host(`npm.env.dennishoyer.com`)"
+    #   - "traefik.http.routers.verdaccio.entrypoints=web"
+    volumes:
+      - "./verdaccio/data/storage:/verdaccio/storage"
+      - "./verdaccio/config:/verdaccio/conf"
+      - "./verdaccio/plugins:/verdaccio/plugins"  
+    # restart: always
+    networks:
+      - traefik
+      - internal
+
+
+volumes:
+  dashy:
+  verdaccio:
+
+networks:
+  internal:
+    driver: overlay
+    attachable: true
+  traefik:
+    attachable: true
+    name: traefik-net

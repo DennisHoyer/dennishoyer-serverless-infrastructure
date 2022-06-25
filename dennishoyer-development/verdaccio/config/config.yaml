@@ -1,0 +1,43 @@
+storage: ../storage
+auth:
+  htpasswd:
+    file: ./htpasswd
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+packages:
+  "@*/*":
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+  "**":
+    proxy: npmjs
+log: { type: stdout, format: pretty, level: http }
+
+web:
+  enable: true
+  title: NPM @ dennishoyer.com
+  logo: https://i.imgur.com/XSlxftf.png
+  primary_color: "#2c223f"
+  gravatar: true | false
+  scope: "@scope"
+  sort_packages: asc | desc
+  darkMode: false
+  favicon: http://somedomain/favicon.ico | /path/favicon.ico
+  rateLimit:
+    windowMs: 50000
+    max: 1000
+  pkgManagers:
+    - npm
+    - yarn
+    - pnpm
+  login: true
+  html_cache: true
+  showInfo: true
+  showSettings: false
+  # In combination with darkMode you can force specific theme
+  showThemeSwitch: false
+  showFooter: false
+  showSearch: false
+  showDownloadTarball: true
+  showRaw: true

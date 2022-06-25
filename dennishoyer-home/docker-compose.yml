@@ -1,0 +1,86 @@
+version: "3"
+
+
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant
+    volumes:
+      - ./hass-config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    # network_mode: host
+    # privileged: true
+    ports:
+      - "8123:8123"
+    depends_on:
+      - mariadb
+      - mosquitto
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.port=32400"
+    #   - "traefik.frontend.rule=Host:home.ahrberg14.de"
+      # - "traefik.enable=true"
+      # - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      # - "traefik.http.routers.http-catchall.entrypoints=web"
+      # - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
+      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # - "traefik.http.routers.homeassistant.rule=Host(`MYEXTERNALWEBADRESS.de`)"
+      # - "traefik.http.routers.homeassistant.entrypoints=websecure"
+      # - "traefik.http.routers.homeassistant.tls.certresolver=mytlschallenge"
+      # - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
+      # - "traefik.docker.network=proxy"
+
+  nodered:
+    container_name: nodered
+    image: nodered/node-red
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./nodered:/data
+    depends_on:
+      - homeassistant
+      - mosquitto
+    environment:
+      TZ: "Europe/Madrid"
+    restart: unless-stopped
+    # labels:
+    #   - "io.portainer.accesscontrol.public"
+  mosquitto:
+    image: eclipse-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "1884:1884"
+    volumes:
+      - "./mosquitto/config:/mosquitto/config"
+      - "./mosquitto/data:/mosquitto/data"
+      - "./mosquitto/log:/mosquitto/log"
+    environment:
+      - TZ=Europe/Madrid
+    user: "${PUID}:${PGID}"
+    # labels:
+    #   - "io.portainer.accesscontrol.public"
+  hass-configurator:
+    container_name: hass-configurator
+    image: "causticlab/hass-configurator-docker:arm"
+    restart: unless-stopped
+    ports:
+      - "8121:3218/tcp"
+    depends_on:
+      - homeassistant
+    volumes:
+      - "./configurator-config:/config"
+      - "./hass-config:/hass-config"
+    user: "${PUID}:${PGID}"
+    # labels:
+    #   - "io.portainer.accesscontrol.public"
+
+volumes:
+  netdata:
+
+networks:
+  proxy:
+    external: true
+  mynet:
+    external: true

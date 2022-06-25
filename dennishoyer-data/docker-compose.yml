@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+    networks:
+      - internal
+
+  postgres:
+    container_name: postgres
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=posthog
+      - POSTGRES_USER=posthog
+      - POSTGRES_PASSWORD=myp@ssw0rd
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+
+  mariadb:
+    container_name: mariadb
+    image: linuxserver/mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "mariadbrootpassword"
+      MYSQL_DATABASE: ha_db
+      MYSQL_USER: homeassistant
+      MYSQL_PASSWORD: "ha_dbdatabasepassword"
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - ./mariadb/data:/config
+    ports:
+      - "3306:3306"
+    # labels:
+    #   - "io.portainer.accesscontrol.public"
+
+
+volumes:
+  mariadb:
+  postgres:
+
+networks:
+  internal:
+    driver: overlay
+    attachable: true
+  traefik:
+    attachable: true
+    name: traefik-net
